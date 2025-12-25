@@ -1,4 +1,5 @@
 from urllib.parse import urlparse
+from urllib.parse import urljoin
 from bs4 import BeautifulSoup
 
 
@@ -24,3 +25,25 @@ def get_first_paragraph_from_html(html):
         return ""
 
     return soup.main.p.get_text()
+
+def get_urls_from_html(html, base_url):
+    url_list = []
+    soup = BeautifulSoup(html, 'html.parser')
+
+    for link in soup.find_all('a'):
+        href_variable = link.get('href')
+        if href_variable:
+            url_list.append(urljoin(base_url, href_variable)) 
+
+    return url_list
+
+def get_images_from_html(html, base_url):
+    url_list = []
+    soup = BeautifulSoup(html, 'html.parser')
+
+    for link in soup.find_all('img'):
+        img_variable = link.get('src')
+        if img_variable:
+            url_list.append(urljoin(base_url, img_variable)) 
+
+    return url_list
