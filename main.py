@@ -1,6 +1,6 @@
 import sys
-import crawl
 from get_html import get_html
+from crawl import crawl_page
 
 
 
@@ -15,10 +15,10 @@ def main():
         print("too many arguments provided")
         sys.exit(1)
 
-    base_url = sys.argv[1]
-    print(f"starting crawl of: {base_url}")
+    entered_url = sys.argv[1]
+    print(f"starting crawl of: {entered_url}")
 
-    print(get_html(base_url))
+    print(crawl_page(entered_url))
 
 
 

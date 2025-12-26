@@ -1,6 +1,7 @@
 from urllib.parse import urlparse
 from urllib.parse import urljoin
 from bs4 import BeautifulSoup
+from get_html import get_html
 
 
 def normalize_url(input_url):
@@ -78,6 +79,49 @@ def extract_page_data(html, page_url):
     page_dict["image_urls"] = get_images_from_html(html, page_url)
 
     return page_dict
+
+
+def crawl_page(base_url, current_url=None, page_data=None):
+    if current_url == None:
+        current_url = base_url
+
+    if page_data == None:
+        page_data = {}
+
+    normalised_current_url = normalize_url(current_url)
+
+    current_url_object = urlparse(current_url)
+    base_url_object = urlparse(base_url)
+
+    print("START crawl_page")
+    print("  base_url   :", base_url)
+    print("  current_url:", current_url)
+    print("  normalized :", normalised_current_url)
+    print("  netlocs    :", current_url_object.netloc, base_url_object.netloc)
+
+    if current_url_object.netloc != base_url_object.netloc:
+        print("domain mismatch, returning")
+        return page_data
+
+    if normalised_current_url in page_data:
+        print("already visited", normalised_current_url)
+        return page_data
+    
+    html = get_html(current_url)
+    print("  html is None? :", html is None)
+    if html is None:
+        print("  -> html is None, returning")
+        return page_data
+
+    page_data[normalised_current_url] = extract_page_data(html, current_url)
+    print("  -> added key:", normalised_current_url)
+    
+    print(html)
+
+    url_list = get_urls_from_html(html, current_url)
+    print("  found urls  :", len(url_list))
+
+    return page_data
 
 
 
