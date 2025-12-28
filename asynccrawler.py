@@ -1,4 +1,6 @@
-from crawl import crawl_page
+import asyncio
+import aiohttp
+from crawl import urlparse, normalize_url, extract_page_data, get_urls_from_html
 
 
 class AsyncCrawler():
@@ -7,16 +9,16 @@ class AsyncCrawler():
         self.base_domain = urlparse(base_url).netloc
         self.page_data = {}
         self.lock = asyncio.Lock()
-        self.max_concurrency = 4
+        self.max_concurrency = 5
         self.semaphore = asyncio.Semaphore(self.max_concurrency)
         self.session = None
 
-	async def __aenter__(self):
-		self.session = aiohttp.ClientSession()
-		return self
+    async def __aenter__(self):
+        self.session = aiohttp.ClientSession()
+        return self
 
-	async def __aexit__(self, exc_type, exc_val, exc_tb):
-		await self.session.close()
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        await self.session.close()
 
     async def add_page_visit(self, normalized_url):
         async with self.lock:
@@ -90,3 +92,16 @@ class AsyncCrawler():
 
 
         return self.page_data
+
+
+    async def crawl(self):
+        await self.crawl_page(self.base_url)
+
+        return self.page_data
+
+async def crawl_site_async(base_url):
+    crawler = AsyncCrawler(base_url)
+    async with crawler:
+        page_data = await crawler.crawl()
+
+    return page_data

@@ -1,11 +1,11 @@
 import sys
-from get_html import get_html
-from crawl import crawl_page
+from asynccrawler import crawl_site_async
+import asyncio
 
 
 
 
-def main():
+async def main():
     print("Hello from webcrawler!")
     if len(sys.argv) < 2:
         print("no website provided")
@@ -18,10 +18,11 @@ def main():
     entered_url = sys.argv[1]
     print(f"starting crawl of: {entered_url}")
 
-    print(crawl_page(entered_url))
+    page_data = await crawl_site_async(entered_url)
+    print(page_data)
 
 
 
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())
