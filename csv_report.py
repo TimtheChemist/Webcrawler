@@ -7,5 +7,17 @@ def write_csv_report(page_data, filename="report.csv"):
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader() # Writes column names
 
+
         for page in page_data.values():
-            writer.writerow(";".join(page["outgoing_links"]))
+
+            row_dict = {
+            "page_url": page["url"],
+            "h1": page["h1"],
+            "first_paragraph": page["first_paragraph"],
+            "outgoing_link_urls": ";".join(page.get("outgoing_links", [])),
+            "image_urls": ";".join(page.get("image_urls", [])),
+            }
+            writer.writerow(row_dict)
+
+   
+  
