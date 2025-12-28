@@ -1,8 +1,7 @@
 import sys
 from asynccrawler import crawl_site_async
 import asyncio
-
-
+from csv_report import write_csv_report
 
 
 async def main():
@@ -26,6 +25,7 @@ async def main():
         print(f"Report: {info['url']}")
     
     print(page_data)
+    write_csv_report(page_data)
 
 
 
